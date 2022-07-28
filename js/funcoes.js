@@ -3,13 +3,13 @@ var temporizador = document.querySelector("#temporizador");
 var contador = document.querySelector("#contador_maca");
 var tela = document.querySelector("canvas");
 var desenhar = tela.getContext("2d");
-var dimensaoMinhoca = 20;
-var taxaDeMovimento = 1;
-var corpo = [];
-var temporizadorSegundos, temporizadorMinutos, cronometro;
+var dimensaoMinhoca = 10;
+var taxaDeMovimento = 10;
+var corpo;
+var tempoAtualMinutos, tempoAtualSegundos, temporizadorSegundos, temporizadorMinutos, cronometro, movimentacao;
 var macasColetadas, xMaca, yMaca;
 var direcoes = {"esquerda":false, "cima":false, "direita":true, "baixo":false}
-var pegouMaca = false;
+var pegouMaca = false, aumentoCorpo = false;
 
 function iniciarJogo()
 {
@@ -29,39 +29,63 @@ function iniciarJogo()
     
     document.getElementById("contador_label").style.display = "block";
 
-    desenharCorpo(500, 200, dimensaoMinhoca, dimensaoMinhoca);
+    //Criando o corpo
+    corpo = [];
     corpo.push(500);
     corpo.push(200);
+    corpo.push(480);
+    corpo.push(200);
 
+    //Gerando a primeira maçã
     gerarCoordenadaMaca();
-    movimentarMinhoca();
+
+    //Iniciando o renderizador de tempo e movimento
+    cronometro = setInterval(iniciarTemporizador, 1000);
+    movimentacao = setInterval(movimentarMinhoca, 250);
+}
+
+function finalizarJogo()
+{
+    //Mensagem de Fim de Jogo
+    alert("Você bateu em si mesmo! Fim de Jogo!!!\n\nTempo de Jogo: "+`${tempoAtualMinutos}:${tempoAtualSegundos}`+"\nQuantidade de Maçãs Coletadas: "+macasColetadas);
+    
+    //Reabilitando Botão Play 
+    document.getElementById("play").disabled = false;
+
+    //Parando o renderizador de tempo e movimento
+    clearInterval(cronometro);
+    clearInterval(movimentacao);
+    apagarCorpo();
+
+    //Ocultando o temporizador e o contador de maçãs
+    document.getElementById("tempo_label").style.display = "none";
+    iniciarTemporizador();
+    document.getElementById("contador_label").style.display = "none";
+
 }
 
 function iniciarTemporizador()
 {
-    cronometro = setInterval(function(){
+    tempoAtualSegundos = temporizadorSegundos <= 9 ? 0+String(temporizadorSegundos) : temporizadorSegundos;
+    tempoAtualMinutos = temporizadorMinutos <= 9 ? 0+String(temporizadorMinutos) : temporizadorMinutos;
 
-        var tempoAtualSegundos = temporizadorSegundos <= 9 ? 0+String(temporizadorSegundos) : temporizadorSegundos;
-        var tempoAtualMinutos = temporizadorMinutos <= 9 ? 0+String(temporizadorMinutos) : temporizadorMinutos;
-
-        temporizador.innerHTML = `${tempoAtualMinutos}:${tempoAtualSegundos}`;
-        temporizadorSegundos++;
-        
-        if(temporizadorSegundos >= 60)
-        {
-            temporizadorSegundos = 0;
-            temporizadorMinutos++;
-        }
-    }, 1000)
+    temporizador.innerHTML = `${tempoAtualMinutos}:${tempoAtualSegundos}`;
+    temporizadorSegundos++;
+    
+    if(temporizadorSegundos >= 60)
+    {
+        temporizadorSegundos = 0;
+        temporizadorMinutos++;
+    }
 }
 
-function desenharCorpo(x, y, largura, altura)
+function desenharCorpo(x, y)
 {
     desenhar.fillStyle = "darkgreen";
-    desenhar.fillRect(x, y, largura, altura);
+    desenhar.fillRect(x, y, dimensaoMinhoca, dimensaoMinhoca);
 }
 
-function apagarCorpo(x, y, largura, altura)
+function apagarCorpo()
 {
     desenhar.fillStyle = "lightgreen";
     desenhar.fillRect(0, 0, 1280, 500);
@@ -69,100 +93,29 @@ function apagarCorpo(x, y, largura, altura)
 
 function movimentarMinhoca()
 {
-    setInterval(function(){
-        apagarCorpo(corpo[0], corpo[1], dimensaoMinhoca, dimensaoMinhoca);
-        desenharMaca();
-        desenharCorpo(corpo[0], corpo[1], dimensaoMinhoca, dimensaoMinhoca);
+    apagarCorpo(corpo[0], corpo[1], dimensaoMinhoca, dimensaoMinhoca);
+    desenharMaca();
 
-        //Testando se tentou pegar a maçã na extremidade direita
-        if((xMaca == corpo[0] + dimensaoMinhoca))
-        {
-            if((yMaca >= corpo[1]) && (yMaca <= corpo[1] + dimensaoMinhoca))
-            {
-                gerarCoordenadaMaca();
-                pegouMaca = true;
-            }
-        }
+    if(aumentoCorpo)
+    {
+        aumentoCorpo = false;
+        aumentarCorpo();
+    }
 
-        //Testando se tentou pegar a maçã na extremidade esquerda
-        if((xMaca == corpo[0]))
-        {
-            if((yMaca >= corpo[1]) && (yMaca <= corpo[1] + dimensaoMinhoca))
-            {
-                gerarCoordenadaMaca();
-                pegouMaca = true;
-            }
-        }
+    if(corpo.length > 2)
+    {
+        sincronizarCorpo();
+    }
+    
+    verificarDirecao();
 
-        //Testando se tentou pegar a maçã na extremidade de cima
-        if((yMaca == corpo[1]))
-        {
-            if((xMaca >= corpo[0]) && (xMaca <= corpo[0] + dimensaoMinhoca))
-            {
-                gerarCoordenadaMaca();
-                pegouMaca = true;
-            }
-        }
+    for(var i=0; i < corpo.length; i += 2)
+    {
+        desenharCorpo(corpo[i], corpo[i+1], dimensaoMinhoca, dimensaoMinhoca);
+    }
 
-        //Testando se tentou pegar a maçã na extremidade de baixo
-        if((yMaca == corpo[1] + dimensaoMinhoca))
-        {
-            if((xMaca >= corpo[0]) && (xMaca <= corpo[0] + dimensaoMinhoca))
-            {
-                gerarCoordenadaMaca();
-                pegouMaca = true;
-            }
-        }
-
-        if(pegouMaca)
-        {
-            contabilizarMaca();
-            pegouMaca = false;
-        }
-
-        if(direcoes["esquerda"])
-        {
-            corpo[0] -= taxaDeMovimento;
-            
-            if(corpo[0] < 0 - dimensaoMinhoca)
-            {
-                corpo[0] = 1280;
-            }
-        }
-        else
-        {
-            if(direcoes["cima"])
-            {
-                corpo[1] -= taxaDeMovimento;
-
-                if(corpo[1] < 0 - dimensaoMinhoca)
-                {
-                    corpo[1] = 500;
-                }
-            }
-            else
-            {
-                if(direcoes["direita"])
-                {
-                    corpo[0] += taxaDeMovimento;
-
-                    if(corpo[0] > 1280)
-                    {
-                        corpo[0] = 0;
-                    }
-                }   
-                else
-                {
-                    corpo[1] += taxaDeMovimento;
-
-                    if(corpo[1] > 500)
-                    {
-                        corpo[1] = 0 - dimensaoMinhoca;
-                    }
-                }
-            }
-        }
-    }, 10);
+    testarColisaoCorpo();
+    testarColisaoMaca();
 }
 
 function mudarDirecao(evento)
@@ -172,53 +125,156 @@ function mudarDirecao(evento)
     switch(codigo)
     {
         case 37:
-            direcoes["esquerda"] = true;
-            direcoes["cima"] = false;
-            direcoes["direita"] = false;
-            direcoes["baixo"] = false;
+            if(!direcoes["direita"])
+            {
+                direcoes["esquerda"] = true;
+                direcoes["cima"] = false;
+                direcoes["direita"] = false;
+                direcoes["baixo"] = false;
+                movimentarMinhoca();
+            }
             break;
 
         case 38:
-            direcoes["esquerda"] = false;
-            direcoes["cima"] = true;
-            direcoes["direita"] = false;
-            direcoes["baixo"] = false;
+            if(!direcoes["baixo"])
+            {
+                direcoes["esquerda"] = false;
+                direcoes["cima"] = true;
+                direcoes["direita"] = false;
+                direcoes["baixo"] = false;
+                movimentarMinhoca();
+            }
             break;
         
         case 39:
-            direcoes["esquerda"] = false;
-            direcoes["cima"] = false;
-            direcoes["direita"] = true;
-            direcoes["baixo"] = false;
+            if(!direcoes["esquerda"])
+            {
+                direcoes["esquerda"] = false;
+                direcoes["cima"] = false;
+                direcoes["direita"] = true;
+                direcoes["baixo"] = false;
+                movimentarMinhoca();
+            }
             break;
         
         case 40:
-            direcoes["esquerda"] = false;
-            direcoes["cima"] = false;
-            direcoes["direita"] = false;
-            direcoes["baixo"] = true;
+            if(!direcoes["cima"])
+            {
+                direcoes["esquerda"] = false;
+                direcoes["cima"] = false;
+                direcoes["direita"] = false;
+                direcoes["baixo"] = true;
+                movimentarMinhoca();
+            }
             break;
     }
 }
 
 function desenharMaca()
 {
-    desenhar.fillStyle = 'red';
-    desenhar.beginPath();
-    desenhar.arc(xMaca, yMaca, dimensaoMinhoca/2, 0, 2*Math.PI);
-    desenhar.fill();    
+    desenhar.fillStyle = '#7a0202';
+    desenhar.fillRect(xMaca, yMaca, dimensaoMinhoca, dimensaoMinhoca);
 }
 
 function gerarCoordenadaMaca()
 {
-    xMaca = Math.floor(Math.random() * 1280);
-    yMaca = Math.floor(Math.random() * 500);
+    xMaca = Math.floor(Math.random() * 64) * 20;
+    yMaca = Math.floor(Math.random() * 25) * 20;
 }
 
 function contabilizarMaca()
 {
     macasColetadas++;
     contador.innerHTML = macasColetadas;
+}
+
+function testarColisaoMaca()
+{
+    if((xMaca == corpo[0]) && (yMaca == corpo[1]))
+    {
+        gerarCoordenadaMaca();
+        pegouMaca = true;
+    }
+
+    if(pegouMaca)
+    {
+        pegouMaca = false;
+        contabilizarMaca();
+        aumentoCorpo = true;
+    }
+}
+
+function testarColisaoCorpo()
+{
+    for(var i = 2; i < corpo.length; i = i + 2)
+    {
+        if((corpo[i] == corpo[0]) && (corpo[i+1] == corpo[1]))
+        {
+            finalizarJogo();
+        }
+    }
+}
+
+function verificarDirecao()
+{
+    if(direcoes["esquerda"])
+    {
+        corpo[0] -= taxaDeMovimento;
+        
+        if(corpo[0] < 0 - dimensaoMinhoca)
+        {
+            corpo[0] = 1280;
+        }
+    }
+    else
+    {
+        if(direcoes["cima"])
+        {
+            corpo[1] -= taxaDeMovimento;
+
+            if(corpo[1] < 0 - dimensaoMinhoca)
+            {
+                corpo[1] = 500;
+            }
+        }
+        else
+        {
+            if(direcoes["direita"])
+            {
+                corpo[0] += taxaDeMovimento;
+
+                if(corpo[0] > 1280)
+                {
+                    corpo[0] = 0;
+                }
+            }   
+            else
+            {
+                corpo[1] += taxaDeMovimento;
+
+                if(corpo[1] > 500)
+                {
+                    corpo[1] = 0 - dimensaoMinhoca;
+                }
+            }
+        }
+    }
+}
+
+function sincronizarCorpo()
+{
+    for(var i = corpo.length - 1; i > 1; i = i - 2)
+    {
+        corpo[i] = corpo[i-2];
+        corpo[i-1] = corpo[i-3];
+    }
+}
+
+function aumentarCorpo()
+{
+    var tamanho = corpo.length;
+    corpo.push(corpo[tamanho-2]);
+    corpo.push(corpo[tamanho-1]);
 }
 
 document.onkeydown = mudarDirecao;
