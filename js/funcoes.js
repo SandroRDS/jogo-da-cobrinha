@@ -240,9 +240,9 @@ function verificarDirecao()
     {
         corpo[0] -= taxaDeMovimento;
         
-        if(corpo[0] < 0 - dimensaoMinhoca)
+        if(corpo[0] < 0)
         {
-            corpo[0] = 1280;
+            corpo[0] = 1280 - dimensaoMinhoca;
         }
     }
     else
@@ -251,9 +251,9 @@ function verificarDirecao()
         {
             corpo[1] -= taxaDeMovimento;
 
-            if(corpo[1] < 0 - dimensaoMinhoca)
+            if(corpo[1] < 0)
             {
-                corpo[1] = 500;
+                corpo[1] = 500 - dimensaoMinhoca;
             }
         }
         else
@@ -262,7 +262,7 @@ function verificarDirecao()
             {
                 corpo[0] += taxaDeMovimento;
 
-                if(corpo[0] > 1280)
+                if(corpo[0] >= 1280)
                 {
                     corpo[0] = 0;
                 }
@@ -271,9 +271,9 @@ function verificarDirecao()
             {
                 corpo[1] += taxaDeMovimento;
 
-                if(corpo[1] > 500)
+                if(corpo[1] >= 500)
                 {
-                    corpo[1] = 0 - dimensaoMinhoca;
+                    corpo[1] = 0;
                 }
             }
         }
