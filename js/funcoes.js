@@ -124,6 +124,25 @@ function mudarDirecao(evento)
 
     switch(codigo)
     {
+        case 65:
+            codigo = 37;
+            break;
+
+        case 87:
+            codigo = 38;
+            break;
+
+        case 68:
+            codigo = 39;
+            break;
+
+        case 83:
+            codigo = 40;
+            break;
+    }
+
+    switch(codigo)
+    {
         case 37:
             if(!direcoes["direita"])
             {
