@@ -1,58 +1,58 @@
 *
 {
-    padding: 0;
-    margin: 0;
+    padding   :  0;
+    margin    :  0;
 }
 body
 {
-    background-color: rgb(52, 151, 52);
-    text-align: center;
-    font-family: sans-serif;
+    background-color   :  rgb(52, 151, 52);
+    text-align         :  center;
+    font-family        :  sans-serif;
 }
 
 h1
 {
-    display: inline;
-    color: rgb(14, 34, 14);
+    display   :  inline;
+    color     :  rgb(14, 34, 14);
 }
 
 #play
 {
-    background-color: rgb(52, 151, 52);
-    border-radius: 50px;
-    border: 0;
-    margin-top: 2vh;
-    cursor: pointer;
+    background-color   :  rgb(52, 151, 52);
+    border-radius      :  50px;
+    border             :  0;
+    margin-top         :  2vh;
+    cursor             :  pointer;
 }
 
 canvas
 {
-    background-color: lightgreen;
-    border-radius: 10px;
-    border: 3px solid rgb(0, 0, 0);
-    margin-top: 5vh;
+    background-color   :  lightgreen;
+    border-radius      :  10px;
+    border             :  3px solid rgb(0, 0, 0);
+    margin-top         :  5vh;
 }
 
 #tempo_label
 {
-    display: none;
-    color: antiquewhite;
-    margin-left: 8%;
-    background-color: rgb(17, 78, 17);
-    border-radius: 20px;
-    box-shadow: 3px 3px 5px rgb(42, 90, 42);
-    border: 3px solid rgb(42, 90, 42);
-    width: 10%;
+    display            :  none;
+    color              :  antiquewhite;
+    margin-left        :  8%;
+    background-color   :  rgb(17, 78, 17);
+    border-radius      :  20px;
+    box-shadow         :  3px 3px 5px rgb(42, 90, 42);
+    border             :  3px solid rgb(42, 90, 42);
+    width              :  10%;
 }
 
 #contador_maca
 {
-    position: relative;
-    bottom: 1.5vh;
-    color: antiquewhite;
+    position   :  relative;
+    bottom     :  1.5vh;
+    color      :  antiquewhite;
 }
 
 #contador_label
 {
-    display: none;
+    display   :  none;
 }

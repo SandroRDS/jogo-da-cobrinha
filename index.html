@@ -4,21 +4,31 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jogo da Cobrinha</title>
     <link rel="shortcut icon" href="images/favicon.png" type="image/x-icon">
     <link rel="stylesheet" href="styles/styles.css">
+    <title>Jogo da Cobrinha</title>
 </head>
 <body>
+    <!--Título: Jogo da Cobrinha-->
     <div>
         <h1>Jogo da Cobrinha</h1>
         <img src="images/cobra.png" alt="cobra" width="60px" style="position: relative;top: 2vh">
     </div>
+
+    <!--Botão: Play-->
     <button id="play" onclick="iniciarJogo()"><img src="images/play.png" alt="play" width="50px"></button>
+    
     <br>
+    
+    <!--Canvas: Mapa do Jogo-->
     <canvas width="1280" height="500"></canvas>
+    
+    <!--Cronômetro-->
     <div>
         <p id="tempo_label">Tempo de Jogo <br> <span id="temporizador"></span></p>
     </div>
+
+    <!--Contador de Maçãs-->
     <div style="position: relative; bottom: 5vh" id="contador_label">
         <img src="images/maca.png" alt="maçãs" width="40px">
         <span id="contador_maca"></span>
