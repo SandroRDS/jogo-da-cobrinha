@@ -20,8 +20,8 @@
 > Status do Projeto: *Versão 1 Completa* &#10004;&#x1F6A7;
 
 <h2 id="descricao"> Descrição </h2>
-O projeto consiste na construção do clássico "Jogo da Cobrinha", popularizado pelo Nokia "tijolão", com HTML, CSS e JavaScript. 
-
+O projeto consiste na construção do clássico "Jogo da Cobrinha", popularizado pelo Nokia "tijolão", com HTML, CSS e JavaScript.
+<br><br>
 <p align="center">
 <img src="images/gameplay.gif" width="800px">
 <br>
