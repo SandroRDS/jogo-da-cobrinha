@@ -250,6 +250,8 @@ function mudarDirecao(evento)
             }
             break;
     }
+    
+    return null;
 }
 
 
