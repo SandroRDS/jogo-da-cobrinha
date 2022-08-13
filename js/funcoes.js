@@ -251,7 +251,7 @@ function mudarDirecao(evento)
             break;
     }
     
-    return null;
+    return false;
 }
 
 
